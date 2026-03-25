@@ -181,10 +181,7 @@
                                     <tr style="border-color: #ecf0f1;">
                                         <td><strong style="color: #2c3e50;">{{ $registro->vehiculo->placa }}</strong></td>
                                         <td>
-                                            <span class="badge" style="padding: 8px 12px; font-size: 12px; border-radius: 20px; font-weight: bold;
-                                                @if($registro->vehiculo->tipo === 'carro') background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-                                                @elseif($registro->vehiculo->tipo === 'moto') background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-                                                @else background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); @endif color: white;">
+                                            <span class="badge {{ $registro->vehiculo->tipo === 'carro' ? 'bg-primary' : ($registro->vehiculo->tipo === 'moto' ? 'bg-warning' : 'bg-secondary') }}" style="padding: 8px 12px; font-size: 12px; border-radius: 20px; font-weight: bold; color: white;">
                                                 {{ ucfirst($registro->vehiculo->tipo) }}
                                             </span>
                                         </td>

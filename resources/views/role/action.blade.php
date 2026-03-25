@@ -41,7 +41,7 @@
                                                 {{ old('active', $role->active ?? 1) ? 'checked' : '' }}
                                                 style="width: 50px; height: 25px; cursor: pointer;">
                                             <label class="form-check-label" for="active" style="margin-left: 10px; cursor: pointer; font-weight: 500;">
-                                                <span id="statusText" style="color: {{ old('active', $role->active ?? 1) ? '#27ae60' : '#e74c3c' }}; font-weight: 600;">
+                                                <span id="statusText" class="{{ old('active', $role->active ?? 1) ? 'text-success' : 'text-danger' }}" style="font-weight: 600;">
                                                     {{ old('active', $role->active ?? 1) ? '✓ Activo' : '✗ Inactivo' }}
                                                 </span>
                                             </label>
@@ -89,11 +89,10 @@
                                     </div>
                                 </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-top: 30px;">
-                                    <button type="button" class="btn me-md-2"
-                                        onclick="window.location.href='{{ route('roles.index') }}'" style="background: #95a5a6; color: white; border: none; border-radius: 5px; padding: 10px 20px; font-weight: 600;">
+                                    <a href="{{ route('roles.index') }}" class="btn btn-secondary me-md-2">
                                         <i class="bi bi-x-circle"></i> Cancelar
-                                    </button>
-                                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-weight: 600;">
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
                                         <i class="bi bi-check-circle"></i> Guardar
                                     </button>
                                 </div>
