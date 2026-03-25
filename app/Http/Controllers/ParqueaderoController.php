@@ -127,6 +127,15 @@ class ParqueaderoController extends Controller
             return back()->with('error', 'Este vehículo ya está en el parqueadero');
         }
 
+        // Verificar capacidad del parqueadero
+        $tarifas = $this->getTarifasFromFile();
+        $capacidad = $tarifas['capacidad'] ?? 50;
+        $vehiculosActivos = RegistroParqueadero::whereNull('hora_salida')->count();
+
+        if ($vehiculosActivos >= $capacidad) {
+            return back()->with('error', 'El parqueadero está lleno. Capacidad máxima: ' . $capacidad . ' vehículos');
+        }
+
         // Crear o obtener vehículo
         $vehiculo = Vehiculo::firstOrCreate(
             ['placa' => strtoupper($request->placa)],

@@ -1,8 +1,8 @@
 <?php
 
 return array (
-  'carro' => 10000,
+  'carro' => 5000,
   'moto' => 3000,
   'bicicleta' => 1000,
-  'capacidad' => 10,
+  'capacidad' => 5,
 );
