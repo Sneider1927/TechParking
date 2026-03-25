@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class RoleController extends Controller
@@ -14,7 +15,8 @@ class RoleController extends Controller
 
     private function authorizeAdministrador()
     {
-        if (!Auth::check() || !Auth::user()->hasRole('administrador')) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole('administrador')) {
             abort(403, 'No autorizado.');
         }
     }

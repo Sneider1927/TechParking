@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vehiculo;
 use App\Models\RegistroParqueadero;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -34,7 +35,8 @@ class ParqueaderoController extends Controller
         $queryActivos = RegistroParqueadero::whereNull('hora_salida')->with('vehiculo');
         $queryIngresos = RegistroParqueadero::whereNotNull('hora_salida');
 
-        if (!Auth::user()->hasRole('administrador')) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole('administrador')) {
             $queryActivos->where('user_id', Auth::id());
             $queryIngresos->where('user_id', Auth::id());
         }
@@ -305,7 +307,8 @@ class ParqueaderoController extends Controller
      */
     public function configurarTarifas()
     {
-        if (!Auth::user()->hasRole('administrador')) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole('administrador')) {
             abort(403, 'No está autorizado para acceder a esta sección');
         }
 
@@ -318,7 +321,8 @@ class ParqueaderoController extends Controller
      */
     public function actualizarTarifas(Request $request)
     {
-        if (!Auth::user()->hasRole('administrador')) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole('administrador')) {
             abort(403, 'No está autorizado para realizar esta acción');
         }
 

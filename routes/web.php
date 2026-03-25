@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
@@ -32,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () { return view('dashboard');})->name('dashboard');
     //segunda parte logout
     Route::post('logout', function (){
-     auth()->logout();
+     Auth::logout();
      return redirect('/login');
     })->name('logout');
 
@@ -53,12 +54,87 @@ Route::middleware(['auth'])->group(function () {
     Route::get('parqueadero/tarifas', [ParqueaderoController::class, 'configurarTarifas'])->name('parqueadero.tarifas');
     Route::post('parqueadero/tarifas', [ParqueaderoController::class, 'actualizarTarifas'])->name('parqueadero.tarifas.actualizar');
     Route::post('parqueadero/capacidad', [ParqueaderoController::class, 'actualizarCapacidad'])->name('parqueadero.capacidad.actualizar');
+
+    // Rutas para crear roles (protegidas por autenticación y solo accesibles para administradores)
+    Route::middleware('role:administrador')->group(function () {
+        Route::post('/crear-rol-administrador', function () {
+            try {
+                $administrador = Role::firstOrCreate(['name' => 'administrador']);
+                
+                $permisosAdmin = [
+                    'user-list', 'user-create', 'user-edit', 'user-delete',
+                    'rol-list', 'rol-create', 'rol-edit', 'rol-delete',
+                    'producto-list', 'producto-create', 'producto-edit', 'producto-delete',
+                ];
+                
+                foreach ($permisosAdmin as $perm) {
+                    $permiso = Permission::firstOrCreate(['name' => $perm]);
+                    $administrador->givePermissionTo($permiso);
+                }
+                
+                return redirect('/dashboard')->with('mensaje', '✅ Rol Administrador creado exitosamente');
+                
+            } catch (Exception $e) {
+                return back()->with('error', '❌ Error: ' . $e->getMessage());
+            }
+        });
+
+        Route::post('/crear-rol-usuario', function () {
+            try {
+                $usuario = Role::firstOrCreate(['name' => 'usuario']);
+                
+                $permisosUsuario = ['perfil', 'pedido-view', 'pedido-cancel'];
+                
+                foreach ($permisosUsuario as $perm) {
+                    $permiso = Permission::firstOrCreate(['name' => $perm]);
+                    $usuario->givePermissionTo($permiso);
+                }
+                
+                return redirect('/dashboard')->with('mensaje', '✅ Rol Usuario creado exitosamente');
+                
+            } catch (Exception $e) {
+                return back()->with('error', '❌ Error: ' . $e->getMessage());
+            }
+        });
+
+        Route::get('/crear-roles-iniciales', function () {
+            try {
+                // Crear Rol Administrador
+                $administrador = Role::firstOrCreate(['name' => 'administrador']);
+                
+                $permisosAdmin = [
+                    'user-list', 'user-create', 'user-edit', 'user-delete',
+                    'rol-list', 'rol-create', 'rol-edit', 'rol-delete',
+                    'producto-list', 'producto-create', 'producto-edit', 'producto-delete',
+                ];
+                
+                foreach ($permisosAdmin as $perm) {
+                    $permiso = Permission::firstOrCreate(['name' => $perm]);
+                    $administrador->givePermissionTo($permiso);
+                }
+                
+                // Crear Rol Usuario
+                $usuario = Role::firstOrCreate(['name' => 'usuario']);
+                
+                $permisosUsuario = ['perfil', 'pedido-view', 'pedido-cancel'];
+                
+                foreach ($permisosUsuario as $perm) {
+                    $permiso = Permission::firstOrCreate(['name' => $perm]);
+                    $usuario->givePermissionTo($permiso);
+                }
+                
+                return redirect()->route('roles.index')->with('mensaje', 'Roles creados exitosamente: Administrador y Usuario');
+                
+            } catch (Exception $e) {
+                return back()->with('error', 'Error: ' . $e->getMessage());
+            }
+        });
+    });
 });
 
 Route::middleware('guest')->group(function () {
     Route::get('login', function () { return view('autenticacion.login');})->name('login');
     Route::post('login', [AuthController::class, 'login'])->name('login.post');
-
 
     Route::get('/registro', [RegisterController::class, 'showRegistrationForm'])->name('registro');
     Route::post('/registro', [RegisterController::class, 'registration'])->name('registro.store');
@@ -67,80 +143,4 @@ Route::middleware('guest')->group(function () {
     Route::post('password/email', [ResetPasswordController::class, 'sendResetLinkEmail'])->name('password.send-link');
     Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('password/reset', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
-
-});
-
-// Rutas para crear roles individuales
-Route::post('/crear-rol-administrador', function () {
-    try {
-        $administrador = Role::firstOrCreate(['name' => 'administrador']);
-        
-        $permisosAdmin = [
-            'user-list', 'user-create', 'user-edit', 'user-delete',
-            'rol-list', 'rol-create', 'rol-edit', 'rol-delete',
-            'producto-list', 'producto-create', 'producto-edit', 'producto-delete',
-        ];
-        
-        foreach ($permisosAdmin as $perm) {
-            $permiso = Permission::firstOrCreate(['name' => $perm]);
-            $administrador->givePermissionTo($permiso);
-        }
-        
-        return redirect('/dashboard')->with('mensaje', '✅ Rol Administrador creado exitosamente');
-        
-    } catch (Exception $e) {
-        return back()->with('error', '❌ Error: ' . $e->getMessage());
-    }
-});
-
-Route::post('/crear-rol-usuario', function () {
-    try {
-        $usuario = Role::firstOrCreate(['name' => 'usuario']);
-        
-        $permisosUsuario = ['perfil', 'pedido-view', 'pedido-cancel'];
-        
-        foreach ($permisosUsuario as $perm) {
-            $permiso = Permission::firstOrCreate(['name' => $perm]);
-            $usuario->givePermissionTo($permiso);
-        }
-        
-        return redirect('/dashboard')->with('mensaje', '✅ Rol Usuario creado exitosamente');
-        
-    } catch (Exception $e) {
-        return back()->with('error', '❌ Error: ' . $e->getMessage());
-    }
-});
-
-// Ruta para crear ambos roles (mantener por compatibilidad)
-Route::get('/crear-roles-iniciales', function () {
-    try {
-        // Crear Rol Administrador
-        $administrador = Role::firstOrCreate(['name' => 'administrador']);
-        
-        $permisosAdmin = [
-            'user-list', 'user-create', 'user-edit', 'user-delete',
-            'rol-list', 'rol-create', 'rol-edit', 'rol-delete',
-            'producto-list', 'producto-create', 'producto-edit', 'producto-delete',
-        ];
-        
-        foreach ($permisosAdmin as $perm) {
-            $permiso = Permission::firstOrCreate(['name' => $perm]);
-            $administrador->givePermissionTo($permiso);
-        }
-        
-        // Crear Rol Usuario
-        $usuario = Role::firstOrCreate(['name' => 'usuario']);
-        
-        $permisosUsuario = ['perfil', 'pedido-view', 'pedido-cancel'];
-        
-        foreach ($permisosUsuario as $perm) {
-            $permiso = Permission::firstOrCreate(['name' => $perm]);
-            $usuario->givePermissionTo($permiso);
-        }
-        
-        return redirect()->route('roles.index')->with('mensaje', 'Roles creados exitosamente: Administrador y Usuario');
-        
-    } catch (Exception $e) {
-        return back()->with('error', 'Error: ' . $e->getMessage());
-    }
 });
