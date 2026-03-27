@@ -19,7 +19,7 @@ use App\Models\Role;
 Route::model('role', Role::class);
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
