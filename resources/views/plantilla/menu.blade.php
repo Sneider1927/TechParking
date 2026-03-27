@@ -3,9 +3,11 @@
     <div class="sidebar-brand">
         <!--begin::Brand Link-->
         <a href="{{route('dashboard')}}" class="brand-link d-flex align-items-center gap-2">
+            <!--begin::Brand Image-->
+            <img src="{{ asset('assets/img/p-logo.svg') }}" alt="Logo P" class="brand-image img-circle elevation-3" style="width: 30px; height: 30px; opacity: .9;" />
+            <!--end::Brand Image-->
             <!--begin::Brand Text-->
             <span class="brand-text fw-light">TechParking</span>
-            <!--end::Brand Text-->
             <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->

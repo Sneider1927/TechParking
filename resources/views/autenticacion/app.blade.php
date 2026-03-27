@@ -19,7 +19,7 @@
     />
     <meta
       name="keywords"
-      content="panel, administración, codeart"
+      content="panel, administración, "
     />
     <!--end::Primary Meta Tags-->
     <!--begin::Accessibility Features-->
