@@ -36,7 +36,7 @@ class ParqueaderoController extends Controller
         $queryIngresos = RegistroParqueadero::whereNotNull('hora_salida');
 
         $user = Auth::user();
-        if (!$user || !$user->hasRole('administrador')) {
+        if (!$user || !$user->hasAnyRole(['administrador', 'admin'])) {
             $queryActivos->where('user_id', Auth::id());
             $queryIngresos->where('user_id', Auth::id());
         }
@@ -56,7 +56,7 @@ class ParqueaderoController extends Controller
 
     public function actualizarCapacidad(Request $request)
     {
-        if (!Auth::user()->hasRole('administrador')) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin'])) {
             abort(403, 'No está autorizado para realizar esta acción');
         }
 
@@ -117,7 +117,7 @@ class ParqueaderoController extends Controller
             $q->where('placa', $request->placa);
         })->whereNull('hora_salida');
 
-        if (!Auth::user()->hasRole('administrador')) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin'])) {
             $registroActivo->where('user_id', Auth::id());
         }
 
@@ -165,7 +165,7 @@ class ParqueaderoController extends Controller
     {
         $query = RegistroParqueadero::whereNull('hora_salida')->with('vehiculo')->orderBy('hora_entrada', 'desc');
 
-        if (!Auth::user()->hasRole('administrador')) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin'])) {
             $query->where('user_id', Auth::id());
         }
 
@@ -185,7 +185,7 @@ class ParqueaderoController extends Controller
 
         $registro = RegistroParqueadero::findOrFail($request->registro_id);
 
-        if (!Auth::user()->hasRole('administrador') && $registro->user_id !== Auth::id()) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin']) && $registro->user_id !== Auth::id()) {
             return back()->with('error', 'No está autorizado para completar la salida de este registro');
         }
 
@@ -209,7 +209,7 @@ class ParqueaderoController extends Controller
     {
         $registro = RegistroParqueadero::with('vehiculo')->findOrFail($registroId);
 
-        if (!Auth::user()->hasRole('administrador') && $registro->user_id !== Auth::id()) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin']) && $registro->user_id !== Auth::id()) {
             return back()->with('error', 'No está autorizado para ver esta factura');
         }
 
@@ -227,7 +227,7 @@ class ParqueaderoController extends Controller
     {
         $registro = RegistroParqueadero::findOrFail($registroId);
 
-        if (!Auth::user()->hasRole('administrador') && $registro->user_id !== Auth::id()) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin']) && $registro->user_id !== Auth::id()) {
             return back()->with('error', 'No está autorizado para completar el pago en este registro');
         }
 
@@ -261,7 +261,7 @@ class ParqueaderoController extends Controller
     {
         $query = RegistroParqueadero::with('vehiculo')->whereNotNull('hora_salida');
 
-        if (!Auth::user()->hasRole('administrador')) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin'])) {
             $query->where('user_id', Auth::id());
         }
 
@@ -280,27 +280,15 @@ class ParqueaderoController extends Controller
      */
     public function reportes(Request $request)
     {
-<<<<<<< HEAD
-=======
-        if (!Auth::user()->hasRole('administrador')) {
+        if (!Auth::user()->hasAnyRole(['administrador', 'admin'])) {
             abort(403, 'No está autorizado para acceder a reportes');
         }
-
->>>>>>> d29908e (actualizando)
         $fechaInicio = $request->fecha_inicio ? Carbon::parse($request->fecha_inicio) : Carbon::now()->startOfMonth();
         $fechaFin = $request->fecha_fin ? Carbon::parse($request->fecha_fin) : Carbon::now()->endOfMonth();
 
         $query = RegistroParqueadero::with('vehiculo')
             ->whereNotNull('hora_salida')
             ->whereBetween('hora_salida', [$fechaInicio, $fechaFin]);
-
-<<<<<<< HEAD
-        if (!Auth::user()->hasRole('administrador')) {
-            $query->where('user_id', Auth::id());
-        }
-
-=======
->>>>>>> d29908e (actualizando)
         $ingresos = $query->get();
 
         $totalIngresos = $ingresos->sum('valor_total');
@@ -327,7 +315,7 @@ class ParqueaderoController extends Controller
     public function configurarTarifas()
     {
         $user = Auth::user();
-        if (!$user || !$user->hasRole('administrador')) {
+        if (!$user || !$user->hasAnyRole(['administrador', 'admin'])) {
             abort(403, 'No está autorizado para acceder a esta sección');
         }
 
@@ -341,7 +329,7 @@ class ParqueaderoController extends Controller
     public function actualizarTarifas(Request $request)
     {
         $user = Auth::user();
-        if (!$user || !$user->hasRole('administrador')) {
+        if (!$user || !$user->hasAnyRole(['administrador', 'admin'])) {
             abort(403, 'No está autorizado para realizar esta acción');
         }
 

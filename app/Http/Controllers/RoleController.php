@@ -16,7 +16,7 @@ class RoleController extends Controller
     private function authorizeAdministrador()
     {
         $user = Auth::user();
-        if (!$user || !$user->hasRole('administrador')) {
+        if (!$user || !$user->hasAnyRole(['administrador', 'admin'])) {
             abort(403, 'No autorizado.');
         }
     }

@@ -12,7 +12,7 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            @role('administrador')
+                            @hasanyrole('administrador|admin')
                                 @if (session('error'))
                                     <div class="alert alert-danger">{{ session('error') }}</div>
                                 @endif
@@ -32,9 +32,9 @@
                                         <i class="bi bi-plus-circle"></i> Crear nuevo rol
                                     </a>
                                 </div>
-                            @endrole
+                            @endhasanyrole
 
-                            @if(!Auth::user()->hasRole('administrador'))
+                            @if(!Auth::user()->hasAnyRole(['administrador', 'admin']))
                                 <div class="alert alert-warning">Solo los administradores pueden crear roles desde este módulo.</div>
                             @endif
 

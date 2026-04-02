@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        @role('administrador')
+        @hasanyrole('administrador|admin')
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card" style="border: none; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
@@ -87,7 +87,7 @@
                 </div>
             </div>
         </div>
-        @endrole
+        @endhasanyrole
 
         @push('scripts')
         <script>
@@ -149,9 +149,15 @@
                     <a href="{{ route('parqueadero.historial') }}" class="btn btn-lg" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.3s;">
                         <i class="bi bi-clock-history" style="font-size: 20px;"></i><br> Historial
                     </a>
+                    @hasanyrole('administrador|admin')
                     <a href="{{ route('parqueadero.reportes') }}" class="btn btn-lg" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; border: none; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.3s;">
                         <i class="bi bi-bar-chart" style="font-size: 20px;"></i><br> Reportes
                     </a>
+                    @else
+                    <span class="btn btn-lg disabled" style="background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%); color: white; border: none; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); opacity: 0.7; cursor: not-allowed;">
+                        <i class="bi bi-lock" style="font-size: 20px;"></i><br> Reportes
+                    </span>
+                    @endhasanyrole
                 </div>
             </div>
         </div>

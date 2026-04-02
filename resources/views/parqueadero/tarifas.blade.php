@@ -11,7 +11,7 @@
             <p style="margin: 10px 0 0 0; opacity: 0.9;">Solo administradores pueden editar las tarifas del estacionamiento</p>
         </div>
 
-        @role('administrador')
+        @hasanyrole('administrador|admin')
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="card" style="border: none; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
@@ -109,7 +109,7 @@
                 <i class="bi bi-exclamation-triangle"></i>
                 <strong>Acceso denegado</strong> - Solo administradores pueden acceder a esta sección.
             </div>
-        @endrole
+        @endhasanyrole
     </div>
 </div>
 @endsection

@@ -24,10 +24,10 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::resource('usuarios', UserController::class);
-    Route::post('usuarios/{id}/assign-role', [UserController::class, 'assignRole'])->name('usuarios.assignRole');
-    Route::resource('roles', RoleController::class);
-    Route::post('roles/{id}/toggle-active', [RoleController::class, 'toggleActive'])->name('roles.toggleActive');
+    Route::resource('usuarios', UserController::class)->middleware('role:administrador|admin');
+    Route::post('usuarios/{id}/assign-role', [UserController::class, 'assignRole'])->middleware('role:administrador|admin')->name('usuarios.assignRole');
+    Route::resource('roles', RoleController::class)->middleware('role:administrador|admin');
+    Route::post('roles/{id}/toggle-active', [RoleController::class, 'toggleActive'])->middleware('role:administrador|admin')->name('roles.toggleActive');
     Route::resource('productos', ProductoController::class);
     Route::patch('usuarios/{usuario}/toggle', [UserController::class, 'toggleStatus'])->name('usuarios.toggle');
     Route::get('dashboard', function () { return view('dashboard');})->name('dashboard');
@@ -50,13 +50,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('parqueadero/descargar-pdf/{registroId}', [ParqueaderoController::class, 'descargarPDF'])->name('parqueadero.pdf');
     Route::post('parqueadero/pago/{registroId}', [ParqueaderoController::class, 'completarPago'])->name('parqueadero.pago');
     Route::get('parqueadero/historial', [ParqueaderoController::class, 'historial'])->name('parqueadero.historial');
-    Route::get('parqueadero/reportes', [ParqueaderoController::class, 'reportes'])->name('parqueadero.reportes');
-    Route::get('parqueadero/tarifas', [ParqueaderoController::class, 'configurarTarifas'])->name('parqueadero.tarifas');
-    Route::post('parqueadero/tarifas', [ParqueaderoController::class, 'actualizarTarifas'])->name('parqueadero.tarifas.actualizar');
-    Route::post('parqueadero/capacidad', [ParqueaderoController::class, 'actualizarCapacidad'])->name('parqueadero.capacidad.actualizar');
+    Route::get('parqueadero/reportes', [ParqueaderoController::class, 'reportes'])->middleware('role:administrador|admin')->name('parqueadero.reportes');
+    Route::get('parqueadero/tarifas', [ParqueaderoController::class, 'configurarTarifas'])->middleware('role:administrador|admin')->name('parqueadero.tarifas');
+    Route::post('parqueadero/tarifas', [ParqueaderoController::class, 'actualizarTarifas'])->middleware('role:administrador|admin')->name('parqueadero.tarifas.actualizar');
+    Route::post('parqueadero/capacidad', [ParqueaderoController::class, 'actualizarCapacidad'])->middleware('role:administrador|admin')->name('parqueadero.capacidad.actualizar');
 
     // Rutas para crear roles (protegidas por autenticación y solo accesibles para administradores)
-    Route::middleware('role:administrador')->group(function () {
+    Route::middleware('role:administrador|admin')->group(function () {
         Route::post('/crear-rol-administrador', function () {
             try {
                 $administrador = Role::firstOrCreate(['name' => 'administrador']);

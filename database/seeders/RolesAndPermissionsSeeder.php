@@ -1,8 +1,10 @@
 <?php
 
 namespace Database\Seeders;
+
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -13,12 +15,16 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $guardName = 'web';
+
         // crear roles
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $clienteRole = Role::firstOrCreate(['name' => 'cliente']);
-        $estudianteRole = Role::firstOrCreate(['name' => 'estudiante']);
-        $administradorRole = Role::firstOrCreate(['name' => 'administrador']);
-        $usuarioRole = Role::firstOrCreate(['name' => 'usuario']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $guardName]);
+        $clienteRole = Role::firstOrCreate(['name' => 'cliente', 'guard_name' => $guardName]);
+        $estudianteRole = Role::firstOrCreate(['name' => 'estudiante', 'guard_name' => $guardName]);
+        $administradorRole = Role::firstOrCreate(['name' => 'administrador', 'guard_name' => $guardName]);
+        $usuarioRole = Role::firstOrCreate(['name' => 'usuario', 'guard_name' => $guardName]);
 
         // Definir permisos
         $adminPermissions = [
@@ -41,44 +47,47 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // crear y asignar permisos
         foreach ($adminPermissions as $permiso) {
-            $permission = Permission::firstOrCreate(['name' => $permiso]);
+            $permission = Permission::firstOrCreate(['name' => $permiso, 'guard_name' => $guardName]);
             $adminRole->givePermissionTo($permission);
+            $administradorRole->givePermissionTo($permission);
         }
 
         foreach ($clientePermissions as $permiso) {
-            $permission = Permission::firstOrCreate(['name' => $permiso]);
+            $permission = Permission::firstOrCreate(['name' => $permiso, 'guard_name' => $guardName]);
             $clienteRole->givePermissionTo($permission);
         }
 
         foreach ($estudiantePermissions as $permiso) {
-            $permission = Permission::firstOrCreate(['name' => $permiso]);
+            $permission = Permission::firstOrCreate(['name' => $permiso, 'guard_name' => $guardName]);
             $estudianteRole->givePermissionTo($permission);
         }
 
         foreach ($administradorPermissions as $permiso) {
-            $permission = Permission::firstOrCreate(['name' => $permiso]);
+            $permission = Permission::firstOrCreate(['name' => $permiso, 'guard_name' => $guardName]);
             $administradorRole->givePermissionTo($permission);
         }
 
         foreach ($usuarioPermissions as $permiso) {
-            $permission = Permission::firstOrCreate(['name' => $permiso]);
+            $permission = Permission::firstOrCreate(['name' => $permiso, 'guard_name' => $guardName]);
             $usuarioRole->givePermissionTo($permission);
         }
 
         // Crear usuarios y asignar roles
-        $adminUser = User::firstOrCreate(
+        $adminUser = User::updateOrCreate(
             ['email' => 'admin@prueba.com'],
-            ['name' => 'Admin', 'password' => bcrypt('admin123456')]
+            ['name' => 'Admin', 'password' => 'admin123456', 'activo' => 1]
         );
 
-        $adminUser->assignRole($adminRole);
+        $adminUser->syncRoles([$adminRole, $administradorRole]);
 
-        $clienteUser = User::firstOrCreate(
+        $clienteUser = User::updateOrCreate(
             ['email' => 'cliente@prueba.com'],
-            ['name' => 'Cliente', 'password' => bcrypt('cliente123456')]
+            ['name' => 'Cliente', 'password' => 'cliente123456', 'activo' => 1]
         );
 
-        $clienteUser->assignRole($clienteRole);
+        $clienteUser->syncRoles([$clienteRole]);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
     }
 }

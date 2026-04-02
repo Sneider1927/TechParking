@@ -60,25 +60,27 @@
                                 <p>Historial</p>
                             </a>
                         </li>
+                        @hasanyrole('administrador|admin')
                         <li class="nav-item">
                             <a href="{{route('parqueadero.reportes')}}" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Reportes</p>
                             </a>
                         </li>
-                        @role('administrador')
+                        @endhasanyrole
+                        @hasanyrole('administrador|admin')
                         <li class="nav-item">
                             <a href="{{route('parqueadero.tarifas')}}" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Configurar Tarifas</p>
                             </a>
                         </li>
-                        @endrole
+                        @endhasanyrole
                     </ul>
                 </li>
 
                 <!-- Roles -->
-                @role('administrador')
+                @hasanyrole('administrador|admin')
                 <li class="nav-item" id="menuSeguridad">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-shield-lock"></i>
@@ -102,7 +104,7 @@
                         </li>
                     </ul>
                 </li>
-                @endrole
+                @endhasanyrole
 
                 <!-- Perfil Usuario -->
                 <li class="nav-item">
