@@ -114,7 +114,7 @@
                                 {{ $registros->appends(['texto' => $texto])->links() }}
                             </div>
                         </div>
-                        <div class="card-footer clearfix">{{ $registros->appends(['texto' => $texto]) }}</div>
+                        <div class="card-footer clearfix">{{ $registros->appends(['texto' => $texto])->links() }}</div>
                     </div>
                 </div>
             </div>

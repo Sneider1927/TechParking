@@ -120,7 +120,7 @@
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">
-                            {{ $registros->appends(['texto' => $texto]) }}
+                            {{ $registros->appends(['texto' => $texto])->links() }}
                         </div>
                     </div>
                     <!-- /.card -->
