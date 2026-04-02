@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-<<<<<<< HEAD
         Schema::dropIfExists('cache');
-=======
->>>>>>> d29908e (actualizando)
         Schema::dropIfExists('jobs');
         // If these tables are not needed for your application, they can be safely removed.
         // Keep 'users', 'roles', 'vehiculos', 'registro_parqueaderos', 'productos', and permission-related tables.
@@ -25,15 +22,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-<<<<<<< HEAD
         Schema::create('cache', function (Blueprint $table) {
             $table->string('key')->primary();
             $table->text('value');
             $table->integer('expiration');
         });
 
-=======
->>>>>>> d29908e (actualizando)
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('queue')->index();
